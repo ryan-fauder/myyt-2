@@ -1,15 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for,Response
 import socket
 from modules.fetch import Fetch
+from flask import jsonify
 
 HOST = "127.0.0.1"
 PORT = 3000
 apiUrl = f"http://{HOST}:{PORT}"
 
 app = Flask(__name__)
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -33,7 +31,9 @@ def stream():
 @app.route('/videos', methods=['GET'])
 def list():
     videos = Fetch.get(f'{apiUrl}/videos')
-    return videos
+    response = jsonify({"result": videos})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 @app.route('/video', methods=['DELETE'])
 def delete():

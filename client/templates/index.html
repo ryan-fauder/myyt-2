@@ -7,22 +7,22 @@
 <body>
     <h1>Upload de Arquivos</h1>
     <form id="upload-form" enctype="multipart/form-data">
+        <label for="video-input">Enviar video</label>
         <input type="file" name="video" id="video-input">
         <button type="button" id="upload-button">Enviar</button>
     </form>
 
     <h1>Lista de Vídeos</h1>
     <ul id="lista-videos">
-        <li><a href="#" id-video="video.mp4">Vídeo 1</a></li>
-        <li><a href="#" id-video="video2.mp4">Vídeo 2</a></li>
-        <li><a href="#" id-video="video3.mp4">Vídeo 3</a></li>
-        <li><a href="#" id-video="video4.mp4">Vídeo 4</a></li>
     </ul>
     <video width="640" height="360" controls id="video-player">
         Seu navegador não suporta a exibição de vídeos.
     </video>
 
 </body>
+
+
+
 <script>
     const listaVideos = document.getElementById("lista-videos");
     const reprodutor = document.getElementById("video-player");
@@ -60,6 +60,28 @@
             });
         });
     
+    document.addEventListener("DOMContentLoaded", carregarListaDeVideos);
 
+    function carregarListaDeVideos() {
+        // Faça a solicitação GET para o servidor localhost:3000/videos
+        fetch('http://localhost:5000/videos')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                data.result.forEach(video => {
+                    console.log(video)
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    listItem.setAttribute('id-video', `${video.id}`)
+                    link.href="#"
+                    link.textContent = `Vídeo ${video.title}`;
+                    listItem.appendChild(link);
+                    listaVideos.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao obter a lista de vídeos:', error);
+            });
+    }
 </script>
 </html>
